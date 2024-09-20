@@ -19,4 +19,9 @@ public class OpenAIController {
         return openAIService.getAnswer(question);
     }
 
+    @PostMapping("/ask/prompt")
+    public Answer getAnswerWithPrompt(@RequestBody Question question) {
+        return openAIService.getAnswerWithPrompt(question);
+    }
+
 }
