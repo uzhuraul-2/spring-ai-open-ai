@@ -2,6 +2,8 @@ package uladzislau.zhurauliou.spring_ai_open_ai.service;
 
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.converter.BeanOutputConverter;
+import org.springframework.ai.openai.OpenAiChatOptions;
+import org.springframework.ai.openai.api.OpenAiApi;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,10 @@ public class OpenAIService {
 
     public OpenAIService(ChatClient.Builder builder) {
         this.client = builder
+                .defaultAdvisors(new LoggerAdvisor())
+                .defaultOptions(OpenAiChatOptions.builder()
+                        .withModel(OpenAiApi.ChatModel.GPT_3_5_TURBO)
+                        .build())
                 .build();
     }
 
