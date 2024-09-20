@@ -2,18 +2,25 @@ package uladzislau.zhurauliou.spring_ai_open_ai.service;
 
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.messages.Message;
-import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.chat.prompt.SystemPromptTemplate;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import uladzislau.zhurauliou.spring_ai_open_ai.dto.Answer;
 import uladzislau.zhurauliou.spring_ai_open_ai.dto.Question;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class OpenAIService {
+
+    @Value("classpath:prompts/system-message.st")
+    private Resource systemResource;
 
     private final ChatClient client;
 
@@ -24,8 +31,14 @@ public class OpenAIService {
 
     public Answer getAnswerWithPrompt(Question question) {
         Message message = new UserMessage(question.question());
-        Message systemMessage = new SystemMessage("Respond in 1 word. Wrap response with <response> tag");
-        Prompt prompt = new Prompt(List.of(message, systemMessage));
+
+        Map<String, Object> model = new HashMap<>();
+        model.put("name", "Alice");
+        model.put("voice", "wizard");
+        SystemPromptTemplate systemPromptTemplate = new SystemPromptTemplate(systemResource);
+        Message systemPromptTemplateMessage = systemPromptTemplate.createMessage(model);
+
+        Prompt prompt = new Prompt(List.of(message, systemPromptTemplateMessage));
         ChatClient.CallPromptResponseSpec call = client.prompt(prompt)
                 .call();
         ChatResponse chatResponse = call.chatResponse();
