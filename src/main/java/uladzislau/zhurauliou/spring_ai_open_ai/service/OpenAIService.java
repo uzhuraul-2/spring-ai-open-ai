@@ -23,6 +23,7 @@ public class OpenAIService {
                 .defaultAdvisors(new LoggerAdvisor())
                 .defaultOptions(OpenAiChatOptions.builder()
                         .withModel(OpenAiApi.ChatModel.GPT_3_5_TURBO)
+                        .withFunction("getActorFilms")
                         .build())
                 .build();
     }
